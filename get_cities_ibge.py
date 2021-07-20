@@ -1,13 +1,7 @@
 import json
-import urllib
-from urllib.parse import urlencode
-
-mkargs = lambda uf_id: urlencode({"localidades": f"n6[n3[{uf_id}]]"})
-mkurl = lambda uf_id: f'https://servicodados.ibge.gov.br/api/v3/agregados/6579/periodos/2020/variaveis/9324?{mkargs(uf_id)}'
-
 curl_cmd = lambda uf: f"""
     curl \\
-       '{mkurl(uf["id"])}' \\
+        'https://servicodados.ibge.gov.br/api/v1/localidades/estados/{uf["id"]}/municipios' \\
         -o ./raw/cities/{uf["sigla"]}_ibge.json"""
 
 ufs = lambda: json.load(open("./raw/uf_ibge.json"))
