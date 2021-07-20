@@ -79,7 +79,7 @@ def mix_ibge_ceps(ibges, ceps):
         yield result
 
 
-def mix_all():
+def mix_cities():
     for uf, ceps_uf, ibges_uf, populations_uf in ufs_datas:
         mixed_ibge_pop = mix_ibge_populations(ibges_uf, populations_uf)
         mixed_ibge_pop_cep = mix_ibge_ceps(mixed_ibge_pop, ceps_uf)
@@ -89,7 +89,15 @@ def mix_all():
 def write_mixed(mixed):
     uf, content = mixed
     with open(f"./mixed/{uf}.json", "w") as uf_file:
-        json.dump(list(content), uf_file)
+        cities = list(content)
+        json.dump(cities, uf_file)
+        yield from cities
 
-list(map(write_mixed, mix_all()))
+
+with open("./mixed/_ALL_.json", "w") as all_cities_file:
+    all_cities = [city for uf in mix_cities() for city in write_mixed(uf)]
+    json.dump(
+        all_cities,
+        all_cities_file
+    )
             
